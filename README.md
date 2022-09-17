@@ -1,4 +1,4 @@
-# 4good-t101i-drivers
+# 4good T101i drivers
 Binary drivers for screen sensor, audio, gyroscope, wifi, bluetooth, battery, camera, gpio, i2c, uart and etc.
 
 # Read it before installing
