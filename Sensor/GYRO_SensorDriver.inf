@@ -1,0 +1,80 @@
+;/*++
+;
+;Copyright (c) 2009-2014 Intel Corporation All rights Reserved
+;
+;Module Name:
+;
+;    GYRO_SensorDriver.inf
+;
+;Abstract:
+;    INF file for installing Gyroscope BMG160 driver
+;
+;Installation Notes:
+;    Using Devcon: Type "pnputil -i -a GYRO_SensorDriver.inf" to install
+;
+;--*/
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=System
+ClassGuid={4D36E97D-E325-11CE-BFC1-08002BE10318}
+Provider=%ManufacturerName%
+CatalogFile=GYRO_SensorDriver.cat
+DriverVer=06/27/2014,9.59.48.710
+PnPLockDown=1
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+GYRO_SensorDriver.sys  = 1,,
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Intel,NTx86
+
+[Intel.NTx86]
+%GYRO_SensorDriver.DeviceDesc%=GYRO_SensorDriver_Device, ACPI\BSBG0160
+
+[GYRO_SensorDriver_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+GYRO_SensorDriver.sys
+
+;-------------- Service installation
+[GYRO_SensorDriver_Device.NT.Services]
+AddService = GYRO_SensorDriver,%SPSVCINST_ASSOCSERVICE%, GYRO_SensorDriver_Service_Inst
+
+; -------------- GYRO_SensorDriver driver install sections
+[GYRO_SensorDriver_Service_Inst]
+DisplayName    = %GYRO_SensorDriver.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\GYRO_SensorDriver.sys
+Dependencies   = SpbCx
+LoadOrderGroup = Extended Base
+
+;
+;--- GYRO_SensorDriver_Device Coinstaller installation ------
+;
+
+[GYRO_SensorDriver_Device.NT.HW]
+AddReg=GYRO_SensorDriver_AddReg
+
+[GYRO_SensorDriver_AddReg]
+HKR,"Settings",internal,0x00000010,1
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="Intel Corporation"
+DiskName = "BSBA0150 Installation Disk #1"
+GYRO_SensorDriver.DeviceDesc = "Gyroscope Sensor Gyro"
+GYRO_SensorDriver.SVCDESC = "BOSCH BMG160 GYRO Device Driver"
